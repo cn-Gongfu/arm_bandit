@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery老虎机转动抽奖程序</title>
+</head>
+
+<style type="text/css">
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, blockquote, th, td, p { margin:0; padding:0 }
+input, button, select, textarea, a:fouse {outline:none}
+li {list-style:none;}
+img {border:none;}
+textarea {resize:none;}
+body {margin:0;font:12px "微软雅黑"; background: url(images/bg_03.png) 0 80px no-repeat;background-size:100%}
+/* === End CSS Reset ========== */
+body{min-width:1000px;_width:expression((document.documentElement.clientWidth||document.body.clientWidth)<950?"950px":"");}
+a{text-decoration:none;}
+.clearfix:after {visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
+.clearfix{*zoom:1;}
+.container{width:1000px;margin:0 auto;position:relative;/*height:198px;*/}
+/* main2 */
+.main2{background:url("images/main2.png") no-repeat center;
+height:689px;_width:expression((document.documentElement.clientWidth||document.body.clientWidth)<1000?"1000px":"");/*最小宽度*/}
+.main3{_width:expression((document.documentElement.clientWidth||document.body.clientWidth)<1000?"1000px":"");}
+.main3-text{color:#744b00;font-size:23px;font-weight:bold;position:absolute;left:74px;top:210px;}
+.main3-text2{color:#744b00;font-size:14px;position:absolute;left:74px;top:254px;line-height:22px;width:867px;}
+.main-text{position:absolute;left:360px;top:325px;color:#b03b01;font-size:16px;}
+.main2-text1{position:absolute;left:79px;top:45px;color:#ffffff;font-size:16px;}
+.main2-text2{position:absolute;left:69px;top:67px;color:#ffffff;font-size:23px;font-weight:bold;}
+.main2-text2 span{color:#ffff00;}
+.main2-text3{position:absolute;left:69px;top:97px;color:#ffffff;font-size:18px;}
+.main2-text4{position:absolute;left:382px;top:34px;color:#ffffff;font-size:18px;}
+.main2-text4 span{color:#ffe700;font-weight:bold;}
+.main2-text5{position:absolute;left:665px;top:34px;color:#ffffff;font-size:18px;}
+.main2-text5 span{color:#ffe700;font-weight:bold;}
+.num{position:absolute;left:248px;top:171px;width:124px;height:198px;overflow:hidden;}
+.num-con{position:relative;top:-430px;}
+.num-img{background:url("images/num.png") no-repeat;width:124px;height:1178px;margin-bottom:4px;}
+.num2{left:399px;}
+.num3{left:551px;}
+.main3-btn{width:307px;height:95px;position:absolute;left:313px;top:-290px;cursor:pointer;}
+
+.info{
+	background-color:#c52227;
+	width:100%;
+	height:65px;
+	text-align:center;
+	padding-top:20px;
+	
+	font: bold 32px/32px 'Microsoft YaHei';
+	color:#fff;
+}
+
+#number{
+ letter-spacing:12px;
+ color:#fce034;
+ font: bold 40px/40px 'Microsoft YaHei';
+}
+#scollInfo{
+	position:absolute;
+ color:#fff;
+ font: bold 30px/30px 'Microsoft YaHei';
+width:100%;
+text-align:center;height:300px;
+
+top:700px;
+
+}
+
+#scollInfo li{
+	letter-spacing:12px;
+	margin-bottom:8px;
+	
+}
+
+</style>
+
+<body>
+<audio id="music1">
+    <source = src="music/ts.mp3" type="audio/mp3">
+</audio>
+<audio id="bgMusic">
+    <source = src="music/zs.mp3" type="audio/mp3">
+</audio>
+<div class="info">
+	<ul class="info_ul">
+		<li>获奖号码:&nbsp;&nbsp;<span id="number"></span></li>
+	</ul>
+</div>
+
+<div class="main2">
+	<div class="container">
+		<div class="num num1">
+			<div class="num-con num-con1">
+				<div class="num-img"></div>
+				<div class="num-img"></div>
+			</div>
+		</div>
+		<div class="num num2">
+			<div class="num-con num-con2">
+				<div class="num-img"></div>
+				<div class="num-img"></div>
+			</div>
+		</div>
+		<div class="num num3">
+			<div class="num-con num-con3">
+				<div class="num-img"></div>
+				<div class="num-img"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="main3">
+	<div class="container">
+		<div class="main3-btn" autofocus="autofocus"></div>
+	</div>
+</div>
+
+<marquee id="scollInfo" direction="up" scrollamount="2" scrolldelay="100" onMouseOver="this.scrollDelay=9999" onMouseOut="this.scrollDelay=100">
+
+</marquee>
+
+</body>
+</html>
+<script type="text/javascript"  src="js/jquery.js"></script>
+<script type="text/javascript">
+
+var count = 156; //设置抽奖人数
+
+
+var audio = document.getElementById("bgMusic");
+
+var m1 = document.getElementById("music1");
+	m1.play();
+
+var flag = true;
+
+$(".main3-btn").click(function () {
+	run();
+
+});
+
+document.onkeydown=function(event){ 
+
+	if(event && event.keyCode == 32 || event.keyCode == 13){
+		run();
+	}
+}
+
+function run(){
+	if(!flag){
+		return;
+	}
+	flag = false;
+	 var num = Math.floor(Math.random()*count);
+	 
+	 var strnum = num+"";
+	 
+	 if(strnum.length == 1){
+		strnum = "00"+strnum;
+	 }else if(strnum.length == 2){
+		strnum = "0"+strnum;
+	 }
+	//audio.play();
+	//m1.pause();
+	anmi(strnum);
+}
+
+function anmi(number){
+	var index = [-1022,-904,-786,-668,-549,-430,-311,-192,-73,-1141];		
+	var strNum = number+"";
+	var arr = strNum.substring("");
+	var f1 = parseInt(arr[0]);
+	var f2 = parseInt(arr[1]);
+	var f3 = parseInt(arr[2]);
+	
+		$(".num-con1").animate({"top":-1178},1000,"linear", function () {
+			$(this).css("top",0).animate({"top":-1178},1200,"linear",function(){
+				$(this).css("top",0).animate({"top":index[f1]},1400,"linear");
+			});	
+		});
+		
+		$(".num-con2").animate({"top":-1178},1200,"linear", function () {
+			$(this).css("top",0).animate({"top":-1178},1400,"linear",function(){
+				$(this).css("top",0).animate({"top":index[f2]},1600,"linear");
+			});	
+		});
+		
+		$(".num-con3").animate({"top":-1178},1400,"linear", function () {
+			$(this).css("top",0).animate({"top":-1178},1600,"linear",function(){
+				$(this).css("top",0).animate({"top":index[f3]},1800,"linear",function(){
+					//动画完毕
+					$("#number").text(number);
+					$("#scollInfo").append($("<li>中奖号码:&nbsp;&nbsp;"+ number +"</li>"));
+					flag = true;
+					//m1.play();
+					//audio.pause();
+				});
+			});			
+		});	
+}
+
+</script>
+</body>
+</html>
